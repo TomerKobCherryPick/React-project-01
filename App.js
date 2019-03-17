@@ -1,7 +1,9 @@
 
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Switch, Button} from 'react-native';
+import {StyleSheet, Text, View, Switch, Button, Vibration} from 'react-native';
 import PropTypes from 'prop-types';
+
+
 const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: 'center',
@@ -91,11 +93,12 @@ class Timer extends Component {
         originalTime: prevState.originalTime,
       }))
     } else {
+      Vibration.vibrate([500, 500, 500])
       clearInterval(this.timer)
     }
   }
   switchTimerTime(){
-      let timeToChange = this.state.isLongTimer ? 300 : 1500
+      let timeToChange = this.state.isLongTimer ? 10 : 1500
       this.setState({
         originalTime: timeToChange,
         timeLeft: timeToChange,
