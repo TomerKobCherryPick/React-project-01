@@ -10,7 +10,12 @@ const styles = StyleSheet.create({
   },
   switchContainer: {
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+
+  },
+  switchItem: {
+    padding: 10
   },
   timer: {
     fontSize: 100,
@@ -30,9 +35,9 @@ const styles = StyleSheet.create({
 });
 const MySwitch = props => (
   <View style={styles.switchContainer}>
-    <Text>Short</Text>
-    <Switch value={props.isLongTimer} onValueChange={props.onValueChange} />
-    <Text>Long</Text>
+    <Text style={styles.switchItem}>Short</Text>
+    <Switch value={props.isLongTimer} onValueChange={props.onValueChange} style={styles.switchItem}/>
+    <Text style={styles.switchItem}>Long</Text>
   </View>
 );
 const Buttons = props => (
@@ -50,7 +55,8 @@ class Timer extends Component {
   state = {
     timeLeft: this.props.timeLeft,
     originalTime: this.props.timeLeft,
-    isPaused: true
+    isPaused: true,
+    isLongTimer: true
   }
   startTimer(){
     if(this.state.isPaused){
@@ -88,6 +94,14 @@ class Timer extends Component {
       clearInterval(this.timer)
     }
   }
+  switchTimerTime(){
+      let timeToChange = this.state.isLongTimer ? 300 : 1500
+      this.setState({
+        originalTime: timeToChange,
+        timeLeft: timeToChange,
+        isLongTimer: !this.state.isLongTimer
+      })
+  }
   getTimeText() {
     let seconds  =  parseInt(this.state.timeLeft % 60)
     let minutes =  parseInt((this.state.timeLeft / 60) % 60)
@@ -95,13 +109,20 @@ class Timer extends Component {
       seconds = '0' + seconds
     }
     if (minutes < 10) {
-      minutes = '0' + seconds
+      minutes = '0' + minutes
     }
     return  minutes + ':' + seconds
   }
   render() {
     return (
       <View style={styles.container}>
+      <MySwitch
+        isLongTimer = {this.state.isLongTimer}
+        onValueChange =
+          {() =>
+            this.switchTimerTime()
+          }
+      />
       <Text style={styles.timer}>
       {this.getTimeText()}
       </Text>
@@ -122,24 +143,10 @@ export default class App extends Component {
       isLongTimer: true
     };
   }
-
   render() {
     return (
       <View style={styles.wholeContainer}>
-        <View style={styles.container}>
-          <MySwitch
-            isLongTimer = {this.state.isLongTimer}
-            onValueChange =
-              {() =>
-                this.setState(
-                  {isLongTimer: !this.state.isLongTimer}
-                )
-              }
-          />
           <Timer timeLeft={this.state.isLongTimer ? 1500 : 300} />
-        </View>
-
-
       </View>
     );
   }
